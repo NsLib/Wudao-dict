@@ -3,6 +3,8 @@ from __future__ import print_function
 import os
 import subprocess
 
+PADDING = '        '
+
 class CommandDraw:
     RED_PATTERN = '\033[31m%s\033[0m'
     GREEN_PATTERN = '\033[32m%s\033[0m'
@@ -31,14 +33,16 @@ class CommandDraw:
             print(text)
     
     def draw_text(self, word, conf):
+        from pprint import pprint
+        pprint(word)
         clipbard_text = ''
         # Word
         print(self.RED_PATTERN % word['word'])
         clipbard_text += word['word'] + '\n'
         # pronunciation
         if word['pronunciation']:
-            uncommit = '        '
-            clipbard_text += '        '
+            uncommit = PADDING
+            clipbard_text += PADDING
             if '英' in word['pronunciation']:
                 uncommit += u'英 ' + self.PEP_PATTERN % word['pronunciation']['英'] + '  '
                 clipbard_text += u'英 ' +  word['pronunciation']['英'] + '  '
@@ -52,8 +56,11 @@ class CommandDraw:
             clipbard_text += '\n'
         # paraphrase
         for v in word['paraphrase']:
-            print('        ' + self.BLUE_PATTERN % v)
-            clipbard_text += '        ' + v + '\n'
+            print(PADDING + self.BLUE_PATTERN % v)
+            clipbard_text += PADDING + v + '\n'
+        if word['pattern']:
+            print(PADDING + self.RED_PATTERN % word['pattern'].strip())
+            clipbard_text += PADDING + word['pattern'] + '\n'
         print('')
         clipbard_text += '\n'
         self.copy_to_clipboard(clipbard_text)
