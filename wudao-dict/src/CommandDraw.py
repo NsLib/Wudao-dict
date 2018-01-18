@@ -33,8 +33,6 @@ class CommandDraw:
             print(text)
     
     def draw_text(self, word, conf):
-        from pprint import pprint
-        pprint(word)
         clipbard_text = ''
         # Word
         print(self.RED_PATTERN % word['word'])
