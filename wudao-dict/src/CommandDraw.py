@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import os
+import subprocess
 
 class CommandDraw:
     RED_PATTERN = '\033[31m%s\033[0m'
@@ -30,21 +31,33 @@ class CommandDraw:
             print(text)
     
     def draw_text(self, word, conf):
+        clipbard_text = ''
         # Word
         print(self.RED_PATTERN % word['word'])
+        clipbard_text += word['word'] + '\n'
         # pronunciation
         if word['pronunciation']:
-            uncommit = ''
+            uncommit = '        '
+            clipbard_text += '        '
             if '英' in word['pronunciation']:
                 uncommit += u'英 ' + self.PEP_PATTERN % word['pronunciation']['英'] + '  '
+                clipbard_text += u'英 ' +  word['pronunciation']['英'] + '  '
             if '美' in word['pronunciation']:
                 uncommit += u'美 ' + self.PEP_PATTERN % word['pronunciation']['美']
+                clipbard_text += u'美 ' + word['pronunciation']['美']
             if '' in word['pronunciation']:
                 uncommit = u'英/美 ' + self.PEP_PATTERN % word['pronunciation']['']
+                clipbard_text += u'英/美 ' + word['pronunciation']['']
             print(uncommit)
+            clipbard_text += '\n'
         # paraphrase
         for v in word['paraphrase']:
-            print(self.BLUE_PATTERN % v)
+            print('        ' + self.BLUE_PATTERN % v)
+            clipbard_text += '        ' + v + '\n'
+        print('')
+        clipbard_text += '\n'
+        self.copy_to_clipboard(clipbard_text)
+
         # short desc
         if word['rank']:
             print(self.RED_PATTERN % word['rank'], end='  ')
@@ -133,3 +146,8 @@ class CommandDraw:
                         print('')
                         print(str(count) + '. ' + self.BROWN_PATTERN % v[0] + '    '+ v[1])
                     count += 1
+
+    def copy_to_clipboard(self, text):
+        p = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
+        p.stdin.write(text.encode('utf-8'))
+        p.stdin.close()
