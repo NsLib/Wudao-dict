@@ -83,7 +83,6 @@ class WudaoCommand:
             word_info = json.loads(server_context)
             if self.is_zh:
                 self.painter.draw_zh_text(word_info, self.conf)
-                self.pronounce()
             else:
                 
                 self.painter.draw_text(word_info, self.conf)
