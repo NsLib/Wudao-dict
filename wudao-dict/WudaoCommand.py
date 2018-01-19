@@ -16,6 +16,7 @@ class WudaoCommand:
     def __init__(self):
         # Member
         self.word = ''
+        self.orignal_word = ''
         self.param_list = []
         self.conf = {"short": False, "save": False}
         self.is_zh = False
@@ -37,6 +38,7 @@ class WudaoCommand:
                 else:
                     self.word += ' ' + v
         self.word = self.word.strip()
+        self.orignal_word = self.word
         if self.word:
             if not is_alphabet(self.word[0]):
                 self.is_zh = True
@@ -103,7 +105,7 @@ class WudaoCommand:
                             word_info = get_text(self.word)
                         if not word_info['paraphrase']:
                             print('No such word: %s found online' % (self.painter.RED_PATTERN % self.word))
-                            exit(0)
+                            self.pronounce_and_exit()
                         # store struct
                         self.history_manager.add_word_info(word_info)
                         if not self.is_zh:
@@ -114,16 +116,27 @@ class WudaoCommand:
                         print('Word not found, auto Online search...')
                         print('You need install bs4, lxml first.')
                         print('Use ' + self.painter.RED_PATTERN % 'sudo pip3 install bs4 lxml' + ' or get bs4 online.')
-                        exit(0)
+                        self.pronounce_and_exit()
                     except URLError:
                         print('Word not found, auto Online search...')
                         print('No Internet : connection time out.')
                 else:
                     print('Word not found, auto Online search...')
                     print('No Internet : Please check your connection or try again.')
-                    exit(0)
+                    self.pronounce_and_exit()
         if not self.conf['save'] and not self.is_zh:
             self.history_manager.save_note(word_info)
+
+    def pronounce(self, times):
+        import subprocess
+        import time
+        for _ in range(times):
+            subprocess.call(["say", self.orignal_word])
+            time.sleep(0.3)
+
+    def pronounce_and_exit(self, times=3):
+        self.pronounce(times=times)
+        exit(0)
 
 def main():
     app = WudaoCommand()
