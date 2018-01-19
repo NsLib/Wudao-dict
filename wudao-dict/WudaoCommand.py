@@ -83,9 +83,11 @@ class WudaoCommand:
             word_info = json.loads(server_context)
             if self.is_zh:
                 self.painter.draw_zh_text(word_info, self.conf)
+                self.pronounce()
             else:
                 
                 self.painter.draw_text(word_info, self.conf)
+                self.pronounce()
         else:
             # search in online cache first
             word_info = self.history_manager.get_word_info(self.word)
@@ -127,7 +129,7 @@ class WudaoCommand:
         if not self.conf['save'] and not self.is_zh:
             self.history_manager.save_note(word_info)
 
-    def pronounce(self, times):
+    def pronounce(self, times=3):
         import subprocess
         import time
         for _ in range(times):
