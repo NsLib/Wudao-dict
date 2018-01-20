@@ -92,6 +92,7 @@ class WudaoCommand:
             word_info = self.history_manager.get_word_info(self.word)
             if word_info:
                 self.painter.draw_text(word_info, self.conf)
+                self.pronounce()
             else:
                 if ie():
                     try:
