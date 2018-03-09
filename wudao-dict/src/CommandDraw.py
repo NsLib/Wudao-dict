@@ -50,6 +50,7 @@ class CommandDraw:
         table_item = TableItem()
         table_item.word = word['word']
         # pronunciation
+        clipbard_text += PADDING + '\n'
         if word['pronunciation']:
             uncommit = PADDING
             clipbard_text += PADDING
