@@ -5,6 +5,15 @@ import subprocess
 
 PADDING = '        '
 
+
+class TableItem(object):
+    def __init__(self):
+        self.word = ''
+        self.soundmark = []
+        self.paraphrase = []
+        self.other = []
+
+
 class CommandDraw:
     RED_PATTERN = '\033[31m%s\033[0m'
     GREEN_PATTERN = '\033[32m%s\033[0m'
@@ -37,6 +46,9 @@ class CommandDraw:
         # Word
         print(self.RED_PATTERN % word['word'])
         clipbard_text += word['word'] + '\n'
+        table = conf['table']
+        table_item = TableItem()
+        table_item.word = word['word']
         # pronunciation
         if word['pronunciation']:
             uncommit = PADDING
@@ -44,24 +56,46 @@ class CommandDraw:
             if '英' in word['pronunciation']:
                 uncommit += u'英 ' + self.PEP_PATTERN % word['pronunciation']['英'] + '  '
                 clipbard_text += u'英 ' +  word['pronunciation']['英'] + '  '
+                table_item.soundmark.append(
+                    u'英 ' +  word['pronunciation']['英'])
             if '美' in word['pronunciation']:
                 uncommit += u'美 ' + self.PEP_PATTERN % word['pronunciation']['美']
                 clipbard_text += u'美 ' + word['pronunciation']['美']
+                table_item.soundmark.append(
+                    u'美 ' + word['pronunciation']['美'])
             if '' in word['pronunciation']:
                 uncommit = u'英/美 ' + self.PEP_PATTERN % word['pronunciation']['']
                 clipbard_text += u'英/美 ' + word['pronunciation']['']
+                table_item.soundmark.append(
+                    u'英/美 ' + word['pronunciation'][''])
             print(uncommit)
             clipbard_text += '\n'
         # paraphrase
         for v in word['paraphrase']:
             print(PADDING + self.BLUE_PATTERN % v)
             clipbard_text += PADDING + v + '\n'
+            table_item.paraphrase.append(v)
         if word['pattern']:
             print(PADDING + self.RED_PATTERN % word['pattern'].strip())
             clipbard_text += PADDING + word['pattern'] + '\n'
+            table_item.other.append(word['pattern'])
         print('')
         clipbard_text += '\n'
-        self.copy_to_clipboard(clipbard_text)
+        if table:
+            text = (
+                '| {word} | {soundmark} | <TODO> | {paraphrase} | {other} |'
+            ).format(
+                word=table_item.word,
+                soundmark=' '.join(table_item.soundmark),
+                paraphrase=' '.join(table_item.paraphrase),
+                other=' '.join(table_item.other)
+            )
+            self.copy_to_clipboard(text)
+            print('*' * 100)
+            print(text)
+            print('*' * 100)
+        else:
+            self.copy_to_clipboard(clipbard_text)
 
         # short desc
         if word['rank']:

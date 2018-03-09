@@ -18,7 +18,7 @@ class WudaoCommand:
         self.word = ''
         self.orignal_word = ''
         self.param_list = []
-        self.conf = {"short": False, "save": False}
+        self.conf = {"short": False, "save": False, "table": False}
         self.is_zh = False
         # Init
         self.param_separate()
@@ -54,6 +54,7 @@ class WudaoCommand:
             print('-k, --kill             kill the server process    (退出服务进程)')
             print('-h, --help             display this help and exit (查看帮助)')
             print('-s, --short-desc       do not show sentence       (只看释义)')
+            print('-t, --table            generate work table        (生成助记表格)')
             print('-n, --not-save         query and save to notebook (不存入生词本)')
             print('生词本文件: ' + os.path.abspath('./usr/') + '/notebook.txt')
             print('查询次数: ' + os.path.abspath('./usr/') + '/usr_word.json')
@@ -68,6 +69,8 @@ class WudaoCommand:
             self.conf['short'] = True
         if 'n' in self.param_list or '-not-save' in self.param_list:
             self.conf['save'] = True
+        if 't' in self.param_list or '-table' in self.param_list:
+            self.conf['table'] = True
         if not self.word:
             print('Usage: wd [OPTION]... [WORD]')
             exit(0)
