@@ -50,7 +50,6 @@ class CommandDraw:
         table_item = TableItem()
         table_item.word = word['word']
         # pronunciation
-        clipbard_text += PADDING + '()\n'
         if word['pronunciation']:
             uncommit = PADDING
             clipbard_text += PADDING
@@ -92,9 +91,6 @@ class CommandDraw:
                 other=' '.join(table_item.other)
             )
             self.copy_to_clipboard(text)
-            print('*' * 100)
-            print(text)
-            print('*' * 100)
         else:
             self.copy_to_clipboard(clipbard_text)
 
