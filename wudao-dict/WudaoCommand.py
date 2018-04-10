@@ -18,7 +18,8 @@ class WudaoCommand:
         self.word = ''
         self.orignal_word = ''
         self.param_list = []
-        self.conf = {"short": False, "save": False, "table": False}
+        self.conf = {"short": False, "save": False, "table": False,
+                     "quizlet": False}
         self.is_zh = False
         # Init
         self.param_separate()
@@ -56,6 +57,7 @@ class WudaoCommand:
             print('-s, --short-desc       do not show sentence       (只看释义)')
             print('-t, --table            generate work table        (生成助记表格)')
             print('-n, --not-save         query and save to notebook (不存入生词本)')
+            print('--quizlet          for quizlet')
             print('生词本文件: ' + os.path.abspath('./usr/') + '/notebook.txt')
             print('查询次数: ' + os.path.abspath('./usr/') + '/usr_word.json')
             #print('-o, --online-search          search word online')
@@ -71,6 +73,9 @@ class WudaoCommand:
             self.conf['save'] = True
         if 't' in self.param_list or '-table' in self.param_list:
             self.conf['table'] = True
+        if '-quizlet' in self.param_list:
+            self.conf['quizlet'] = True
+
         if not self.word:
             print('Usage: wd [OPTION]... [WORD]')
             exit(0)
@@ -133,6 +138,9 @@ class WudaoCommand:
             self.history_manager.save_note(word_info)
 
     def pronounce(self, times=3):
+        if self.conf['quizlet']:
+            return
+
         import subprocess
         import time
         for _ in range(times):

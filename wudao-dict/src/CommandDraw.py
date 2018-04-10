@@ -4,6 +4,8 @@ import os
 import subprocess
 
 PADDING = '        '
+QUIZLET_PADDING = ''
+QUIZLET_DELIMITER = '<<<>>>'
 
 
 class TableItem(object):
@@ -45,14 +47,18 @@ class CommandDraw:
         clipbard_text = ''
         # Word
         print(self.RED_PATTERN % word['word'])
-        clipbard_text += word['word'] + '\n'
+        clipbard_text += word['word']
+        if conf['quizlet']:
+            clipbard_text += QUIZLET_DELIMITER
+        clipbard_text += '\n'
         table = conf['table']
         table_item = TableItem()
         table_item.word = word['word']
+        padding = QUIZLET_PADDING if conf['quizlet'] else PADDING
         # pronunciation
         if word['pronunciation']:
-            uncommit = PADDING
-            clipbard_text += PADDING
+            uncommit = padding 
+            clipbard_text += padding
             if '英' in word['pronunciation']:
                 uncommit += u'英 ' + self.PEP_PATTERN % word['pronunciation']['英'] + '  '
                 clipbard_text += u'英 ' +  word['pronunciation']['英'] + '  '
@@ -72,12 +78,12 @@ class CommandDraw:
             clipbard_text += '\n'
         # paraphrase
         for v in word['paraphrase']:
-            print(PADDING + self.BLUE_PATTERN % v)
-            clipbard_text += PADDING + v + '\n'
+            print(padding + self.BLUE_PATTERN % v)
+            clipbard_text += padding + v + '\n'
             table_item.paraphrase.append(v)
         if word['pattern']:
-            print(PADDING + self.RED_PATTERN % word['pattern'].strip())
-            clipbard_text += PADDING + word['pattern'] + '\n'
+            print(padding + self.RED_PATTERN % word['pattern'].strip())
+            clipbard_text += padding + word['pattern'] + '\n'
             table_item.other.append(word['pattern'])
         print('')
         clipbard_text += '\n'
